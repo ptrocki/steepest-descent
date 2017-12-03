@@ -1,17 +1,13 @@
-ypsilon=0.1;
-s = 2;
-x0 = 10;
-z_n = x0;
-t = 1;
-tn = t;
+x0 = 1; 
+x1 = 1;
+a = 5;
+b = 2;
+c = 2;
+d = 7;
+e = 2;
+f = 2;
+syms u(x) v(x)
+H = a*(u-b)^c+d*(v-e)^f;
+D = functionalDerivative(H,[u v]);
+wynik = subs(subs(H,v(x),x0),u(x),x1);
 
-while true
-    d_n = gradient(fun(z_n)); 
-    tn = min(fun(z_n+tn*d_n));
-    z_n1 = z_n + tn*d_n;
-    if abs(z_n1-z_n) < ypsilon
-        disp(z_n)
-        break
-    end
-    z_n = z_n1;
-end

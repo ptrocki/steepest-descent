@@ -1,4 +1,4 @@
-function y = fun(x)
-    y = x(1)^2 + 10.*x(1) + x(1);
+function y = fun(x1,x2,a,b,c,d,e,f)
+    y = a*(x1-b)^c+d*(x2-e)^f;
 end
 

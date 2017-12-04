@@ -15,7 +15,19 @@
 
 %fu = sym('10*i^2 + 10*i*j + 8*j^2 -14*i -6*i + 15 ');
 fu = sym('5*(u-2)^2+7*(v-2)^2');
-grad2 = gradient(fu);
-direction = subs(subs(gradient(fu),1),1); % za 1,1 podstaw aktualne x0
-alpha = armijo(1,x0,1,fu,grad2);
-disp(alpha)
+alpha = 1 ;
+tn = 1;
+new_points = [x0,x1];
+epsylon = 0.1;
+while 1
+old_points = new_points;
+dn = -1*gradient(fu);
+alpha = armijo(alpha,old_points,1,fu,grad2);
+alpha_points = (alpha.*tn.*dn)+old_points';
+tn = subs(subs(gradient(fu),alpha_points(1)),alpha_points(2));
+new_points = old_points + tn.*dn;
+if (new_points(1) - old_points(1)) < epsylon && (new_points(2) - old_points(2)) < epsylon
+    disp(new_points)
+    break
+end
+end

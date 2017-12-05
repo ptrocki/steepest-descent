@@ -1,23 +1,30 @@
 
 results =zeros(1,6);
 
-f = sym('5*(a-2)^2+7*(b-2)^2');
+f = sym('5*(a)^2+7*(b)^2');
 grad = gradient(f);
 
 syms a
 syms b
-ypsylon = 10^(-1);
+syms tau
+ypsylon = 10^(-2);
 
 k = 0; 
-x = [4 4]';
+x = [1 1]';
     
 while 1>0
     x_temp = x;
     k = k+1;
     d = -1 * subs(grad,[a b], x'); 
     alpha = 0.1;
-    
-    x = x + alpha .* (d);
+    % pod funkcje f podstawiamy f od tau 
+    % f(x+td)
+    x_tau = x + tau.*d;
+    %func_to_opt = subs(subs(f,a, x_tau(1)),b,x_tau(2)); 
+    func_to_opt2 = subs(f,[a b], x_tau');
+    %gugu = golden(matlabFunction(func_to_opt2),0,10,0.000001,0.000001);
+    x = armijo(matlabFunction(func_to_opt2),x(1)-30,x(2)+30);
+    %x = x + alpha .* (d);
   
     results(k,:) = [k, x_temp(1), x_temp(2), d(1), d(2), subs(f,[a b], x_temp') ];
 

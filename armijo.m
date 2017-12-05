@@ -1,44 +1,49 @@
-function [alpha_armijo] = armijo(alpha,x,d,f0,f1,gamma,delta)
-%% ARMIJO
-% DESCRIPTION:
-% function to check whether the provided steplength satisfies Armijo 
-% condition: f(x+alpha*d)<=f(x)+gamma*alpha*gradient(f(x))'*d
-% if this condition is not met, it extracts the greatest value of alpha that
-% satisfies Armijo's expression.
-%
-% function [alpha_armijo] = armijo(alpha,x,d,f0,f1,gamma,delta)
-% INPUT:
-%       NOTE: (*) indicates necessary input, the other variables are optional 
-%       (*) alpha     - current steplength (1*1);
-%       (*) x         - current iterate    (N*1);
-%       (*) d         - search direction   (N*1);
-%           gamma     - constant provided by the user (1*1) into the range [0,0.5]
-%           delta     - constant provided by the user (1*1) into the range [0,  1]
-%       (*) f0        - function handle of the objective function          (RN->R );
-%       (*) f1        - the gradient (as function handle) of the function  (RN->RN);
-% OUTPUT:
-%       alpha_armijo - value of alpha whether the condition holds      (1*1);
-% REVISION:
-%       Ennio Condoleo Rome, Italy h: 23.04 9 Jan 2014
+function [alpha_armijo] = armijo(f,a,b)
+% ------------------------GOLDEN SECTION METHOD----------------------------
+%a=0;                            % start of interval
+%b=2;                            % end of interval
+epsilon=0.1;               % accuracy value
+iter= 50;                       % maximum number of iterations
+tau=double((sqrt(5)-1)/2);      % golden proportion coefficient, around 0.618
+k=0;                            % number of iterations
 
 
-    if (nargin<6)
-        delta = 0.5;
-        gamma = 1e-4;
-    elseif (nargin==6)
-        delta = 0.5;
+x1=a+(1-tau)*(b-a);             % computing x values
+x2=a+tau*(b-a);
+
+f_x1=f(x1);                     % computing values in x points
+f_x2=f(x2);
+
+
+while ((abs(b-a)>epsilon) && (k<iter))
+    k=k+1;
+    if(f_x1<f_x2)
+        b=x2;
+        x2=x1;
+        x1=a+(1-tau)*(b-a);
+        
+        f_x1=f(x1);
+        f_x2=f(x2);
+        
+    else
+        a=x1;
+        x1=x2;
+        x2=a+tau*(b-a);
+        
+        f_x1=f(x1);
+        f_x2=f(x2);
+        
     end
     
-   j = 1;
-    while (j>0)
-        x_new = x+alpha.*d;
-        if (subs(subs(f0,x_new(1)),x_new(2))<=subs(subs(f0,x(1)),x(2))+gamma*alpha*subs(subs(f1,x(1)),x(2))'*d)
-            j = 0;
-            alpha_armijo = alpha;
-        else
-            alpha = alpha*delta;
-        end    
-    end
+    k=k+1;
+end
+
+sprintf('number of iteration of golden SECTION METHOD =%f', k)
+if(f_x1<f_x2)
+    alpha_armijo = [x1;f_x1];
+else
+    alpha_armijo = [x2;f_x2];
+end
 
 end
 

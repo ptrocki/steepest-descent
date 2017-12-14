@@ -1,7 +1,7 @@
 
 results =zeros(1,6);
-
-f = sym('5*(a)^2+7*(b)^2');
+f = sym('5*(a-10)^2+7*(b-10)^2');
+%f = sym('5*(a-10)^3+7*(b-10)^2'); func which has not got a minimum 
 grad = gradient(f);
 
 syms a
@@ -17,6 +17,11 @@ while 1>0
     k = k+1;
     d = -1 * subs(grad,[a b], x'); 
     x_tau = x + tau.*d;
+    if isinf(x_tau(2)) || isinf(x_tau(1))
+        disp("Func has not got a minumum")
+        disp(results(k-1,:))
+        break;
+    end 
     func_to_opt2 = subs(f,[a b], x_tau');
     min_of_tau_func = simulannealbnd(matlabFunction(func_to_opt2),double(x(1)));
     x = x + d.*min_of_tau_func;
